@@ -1,6 +1,7 @@
 package com.medac.t6navigation3;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.medac.t6navigation3.basedatos.UsuariosSQLiteHelper;
 import com.medac.t6navigation3.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +69,33 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+
+        //Abrimos la base de datos 'DBUsuarios' en modo escritura
+        UsuariosSQLiteHelper usdbh =
+                new UsuariosSQLiteHelper(this, "DBUsuarios", null, 1);
+
+        SQLiteDatabase db = usdbh.getWritableDatabase();
+
+        //Si hemos abierto correctamente la base de datos
+        if(db != null)
+        {
+            //Insertamos 5 usuarios de ejemplo
+            for(int i=1; i<=5; i++)
+            {
+                //Generamos los datos
+                int codigo = i;
+                String nombre = "Usuario" + i;
+
+                //Insertamos los datos en la tabla Usuarios
+                db.execSQL("INSERT INTO Usuarios (codigo, nombre) " +
+                        "VALUES (" + codigo + ", '" + nombre +"')");
+            }
+
+            //Cerramos la base de datos
+            db.close();
+        }
     }
 
     @Override
